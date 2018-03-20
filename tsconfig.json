@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "target": "es2018",
+        "declaration": true,
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "moduleResolution": "node"
+    },
+    "files": [
+        "greycat.rocksdb.ts"
+    ]
+}

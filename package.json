@@ -1,0 +1,26 @@
+{
+    "name": "Incub-GreyCat-RocksDB",
+    "version": "1.0.0-SNAPSHOT",
+    "description": "Unofficial RocksDB storage plugin for GreyCat",
+    "typings": "greycat-incub-rocksdb",
+    "devDependencies": {
+        "@types/node": "9.4.7",
+        "typescript": "2.7.2"
+    },
+    "dependencies": {
+        "@greycat/greycat": "11.0.0",
+        "es6-promise": "3.3.0",
+        "fs": "0.0.1-security",
+        "levelup": "2.0.2",
+        "mkdirp": "0.5.1",
+        "rocksdb": "2.0.0"
+    },
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/datathings/greycat.git"
+    },
+    "bugs": {
+        "url": "https://github.com/datathings/greycat/issues"
+    }
+}
