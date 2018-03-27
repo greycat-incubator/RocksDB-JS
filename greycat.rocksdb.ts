@@ -10,7 +10,7 @@ export namespace greycatincub {
     const { sep } = require('path')
 
     const CONNECTION_ERROR: string = 'PLEASE CONNECT YOUR DATABASE FIRST'
-    const PREFIX_KEY: Int8Array = new Int8Array(Buffer.from('prefix'))
+    const PREFIX_KEY: Buffer = Buffer.from('prefix')
 
     export class RocksDBStorage implements plugin.Storage {
       private storagePath: string;
@@ -19,7 +19,7 @@ export namespace greycatincub {
       private graph: Graph;
       private db: any;
 
-      constructor (storagePath: string) {
+      constructor(storagePath: string) {
         this.storagePath = storagePath
         this.updates = Array()
       }
@@ -30,38 +30,43 @@ export namespace greycatincub {
         }
 
         const itKeys: struct.BufferIterator = keys.iterator()
-        const promises: Array<Promise<Buffer>> = Array()
+        const promises: Array<Promise<any>> = Array()
 
         while (itKeys.hasNext()) {
           const view: struct.Buffer = itKeys.next()
-          try {
-            promises.push(this.db.get(view.data()))
-          } catch (e) {
-            console.log(e)
-          }
+          let nodeBufferKey: Buffer = Buffer.from(view.data())
+          let promise: Promise<any> = this.db.get(nodeBufferKey);
+          let promiseWithCatch: Promise<any> = promise.catch((error: any) => { console.log(error); });
+          promises.push(promiseWithCatch);
         }
 
         const self = this;
-        Promise.all(promises).then(function (dbValues: Buffer[]) {
-          const result: struct.Buffer = self.graph.newBuffer();
 
-          dbValues.forEach((val: Buffer, idx: number) => {
-            if (idx > 0) {
-              result.write(internal.CoreConstants.BUFFER_SEP)
+        Promise.all(promises)
+          .then((dbValues: Buffer[]) => {
+            const result: struct.Buffer = self.graph.newBuffer();
+
+            dbValues.forEach((val: Buffer, idx: number) => {
+              if (idx > 0) {
+                result.write(internal.CoreConstants.BUFFER_SEP)
+              }
+
+              if (val != null) {
+                result.writeAll(val)
+              }
+            });
+
+            if (callback) {
+              callback(result)
             }
-            const casted: Int8Array = new Int8Array(val)
-            result.writeAll(casted)
           })
+          .catch((error: any) => {
+            console.log(error);
+            callback(null);
+          });
 
-          if (callback) {
-            callback(result)
-          }
-        }, function (error: any) {
-          console.log(error)
-          callback(null)
-        })
       }
-      
+
       put(stream: struct.Buffer, callback: Callback<boolean>): void {
         if (!this.isConnected) {
           throw new Error(CONNECTION_ERROR)
@@ -72,7 +77,7 @@ export namespace greycatincub {
           result = this.graph.newBuffer()
         }
 
-        let batch = this.db.batch()
+        let batchOps = [];
 
         const itStream: struct.BufferIterator = stream.iterator()
 
@@ -82,7 +87,11 @@ export namespace greycatincub {
           const valueView: struct.Buffer = itStream.next()
 
           if (valueView != null) {
-            batch.put(keyView.data(), valueView.data())
+            const nodeBuffKey = Buffer.from(keyView.data());
+            const nodeBufferVal = Buffer.from(valueView.data());
+
+            batchOps.push({ type: 'put', key: nodeBuffKey, value: nodeBufferVal });
+
           }
 
           if (result != null) {
@@ -101,7 +110,8 @@ export namespace greycatincub {
 
         // write sync option is by default equals to false
         const self = this;
-        batch.write(function (err: any) {
+      
+        this.db.batch(batchOps, function (err: any) {
           if (err != null) {
             console.log(err)
             if (callback != null) {
@@ -125,7 +135,7 @@ export namespace greycatincub {
         }
 
         let result: struct.Buffer
-        let batch = this.db.batch()
+        let batchOps = [];
 
         const itStream: struct.BufferIterator = stream.iterator()
 
@@ -135,7 +145,10 @@ export namespace greycatincub {
           const valueView: struct.Buffer = itStream.next()
 
           if (valueView != null) {
-            batch.put(keyView.data(), valueView.data())
+            const nodeBuffKey = Buffer.from(keyView.data());
+            const nodeBufferVal = Buffer.from(valueView.data());
+
+            batchOps.push({ type: 'put', key: nodeBuffKey, value: nodeBufferVal });
           }
 
           if (isFirst) {
@@ -151,7 +164,7 @@ export namespace greycatincub {
         }
 
         // write sync option is by default equals to false
-        batch.write(function (err: any) {
+        this.db.batch(batchOps, function (err: any) {
           if (err != null) {
             console.log(err)
             if (callback != null) {
@@ -175,9 +188,11 @@ export namespace greycatincub {
 
         while (itKeys.hasNext()) {
           const keyView: struct.Buffer = itKeys.next()
-          promises.push(this.db.del(keyView.data()))
+          const nodeBufferKey = Buffer.from(keyView.data());
+          promises.push(this.db.del(nodeBufferKey))
         }
 
+        //fix me
         Promise.all(promises).then(function () {
           callback(true)
         }, function (error) {
@@ -192,7 +207,7 @@ export namespace greycatincub {
           }
           return
         }
-      
+
         const dbPath = `${this.storagePath}${sep}data`
         if (!fs.existsSync(dbPath)) {
           mkdirp.sync(dbPath)
@@ -201,10 +216,10 @@ export namespace greycatincub {
         try {
           // createIfMissing and SnappyCompression are set by default by th JD wrapper
           this.db = levelup(rocksdb(this.storagePath));
-          
+
           this.isConnected = true;
           this.graph = graph;
-          console.log("11");
+
           if (callback != null) {
             callback(true);
           }
@@ -244,21 +259,18 @@ export namespace greycatincub {
 
       lock(callback: Callback<struct.Buffer>): void {
         const self = this;
-        self.db.get(PREFIX_KEY, function (err: any, current: Int8Array) {
+        self.db.get(PREFIX_KEY, function (err: any, current: Buffer) {
           if (err) {
-            current = new Int8Array(Buffer.from('0'))
+            current = Buffer.from('0');
           }
 
-          const currentStr: string = Buffer.from(current).toString()
+          const currentStr: string = current.toString()
           const currentPrefix: number = Number(currentStr)
 
           const newVal = currentPrefix + 1
-          const newValArr: Int8Array = new Int8Array(Buffer.from(newVal + ''))
+          const newValArr: Buffer = Buffer.from(newVal + '')
 
-          console.log("lock - call put")
           self.db.put(PREFIX_KEY, newValArr, function (err: any) {
-            console.log("lock - call put - callback")
-            console.log(err)
             if (err != null) {
               console.log(err)
               if (callback != null) {
@@ -270,8 +282,6 @@ export namespace greycatincub {
             if (callback != null) {
               var resBuffer: struct.Buffer = self.graph.newBuffer();
               utility.Base64.encodeIntToBuffer(currentPrefix, resBuffer);
-              console.log("Call callback")
-              console.log("callback")
               callback(resBuffer);
             }
           });
