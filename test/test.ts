@@ -120,6 +120,10 @@ describe('Test compatibility with Java', () => {
         exec(`"java" -jar ${PATH_JAR_WRITE} ${dbCreationPath} ${world} ${time} ${indexName}`, function (error, stdout, stderr) {
             
             const noError = (stderr === "") && (error === null);
+            if(!noError) {
+                console.log(error);
+                console.log(stderr);
+            }
             expect(noError).to.equal(true);
 
             const graph = BUILDER.build();
