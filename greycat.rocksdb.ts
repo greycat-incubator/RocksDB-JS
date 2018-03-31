@@ -215,7 +215,7 @@ export namespace greycatincub {
 
         try {
           // createIfMissing and SnappyCompression are set by default by th JD wrapper
-          this.db = levelup(rocksdb(this.storagePath));
+          this.db = levelup(rocksdb(dbPath));
 
           this.isConnected = true;
           this.graph = graph;
