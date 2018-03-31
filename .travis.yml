@@ -3,12 +3,10 @@ language: node_js
 node_js: 
   - "8"
 
-cache:
-  directories:
-    - node_modules
-
-before_install:
+  before_install:
   - sudo apt-get install openjdk-8-jdk maven
+  - java -version
+  - mvn -vesion
 
 install:
   - npm install
