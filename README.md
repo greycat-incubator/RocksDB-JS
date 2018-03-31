@@ -1,4 +1,7 @@
 # RocksDB-JS
+
+[![Build Status](https://travis-ci.org/greycat-incubator/RocksDB-JS.svg?branch=master)](https://travis-ci.org/greycat-incubator/RocksDB-JS)
+
 Unofficial implementation of [GreyCat RocksDB plugin](https://github.com/datathings/greycat/tree/master/plugins/rocksdb) in Typescript/Javascript.
 The plugin can be used exactly as the Java version, and and the same version.
 We use the [Level](https://github.com/Level) rocksdb wrapper.
