@@ -5,9 +5,10 @@
         "declaration": true,
         "module": "commonjs",
         "noImplicitAny": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "outDir": "dist"
     },
     "files": [
-        "greycat.rocksdb.ts"
+        "greycatincub.rocksdb.ts"
     ]
 }

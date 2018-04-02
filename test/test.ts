@@ -1,4 +1,4 @@
-import { greycatincub } from '../greycat.rocksdb';
+import { greycatincub } from '../greycatincub.rocksdb';
 import { expect } from 'chai';
 import 'mocha';
 import { Graph, GraphBuilder, Type, Node, Constants, struct, NodeIndex } from '@greycat/greycat';
@@ -80,7 +80,7 @@ describe('Test read / write functions, low level', () => {
             buffer.write(Constants.BUFFER_SEP);
             buffer.writeString("value");
 
-            db.put(buffer, (b) => {
+            db.put(buffer, (b: Boolean) => {
                 expect(b).to.equal(true);
 
                 const keyBuff = graph.newBuffer();
@@ -117,7 +117,8 @@ describe('Test compatibility with Java', () => {
     })
 
     it('should read Java DB created', (done: MochaDone) => {
-        exec(`"java" -jar ${PATH_JAR_WRITE} ${dbCreationPath} ${world} ${time} ${indexName}`, function (error, stdout, stderr) {
+        const cmd = `"java" -jar ${PATH_JAR_WRITE} ${dbCreationPath} ${world} ${time} ${indexName}`;
+        exec(cmd, function (error: any, stdout: string, stderr: string) {
             
             const noError = (stderr === "") && (error === null);
             expect(noError).to.equal(true);
@@ -172,7 +173,8 @@ describe('Test compatibility with Java', () => {
                     idx.update(node);
                     
                     graph.disconnect((discoOK: boolean) => {
-                        exec(`"java" -jar ${PATH_JAR_READ} ${dbCreationPath} ${world} ${time} ${indexName}`, function (error, stdout, stderr) {
+                        const cmd = `"java" -jar ${PATH_JAR_READ} ${dbCreationPath} ${world} ${time} ${indexName}`
+                        exec(cmd, function (error: any, stdout: string, stderr: string) {
             
                             const noError = (stderr === "") && (error === null);
                             expect(noError).to.equal(true);
