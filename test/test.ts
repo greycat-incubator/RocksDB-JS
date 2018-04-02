@@ -1,4 +1,4 @@
-import { greycatincub } from '../greycatincub.rocksdb';
+import { greycatincub } from '../greycatincub.level';
 import { expect } from 'chai';
 import 'mocha';
 import { Graph, GraphBuilder, Type, Node, Constants, struct, NodeIndex } from '@greycat/greycat';

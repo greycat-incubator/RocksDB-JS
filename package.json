@@ -1,5 +1,5 @@
 {
-    "name": "@greycatincub/storage-rocksdb-leveldb",
+    "name": "greycatincub-level",
     "version": "1.0.0",
     "description": "Unofficial RocksDB/LevelDB storage plugin for GreyCat",
     "typings": "dist/greycat-incub-rocksdb.d.ts",
@@ -38,8 +38,8 @@
         "compile": "npm run clean && tsc"
     },
     "files": [
-        "dist/greycat-incub-rocksdb.js",
-        "dist/greycat-incub-rocksdb.d.ts",
-        "dist/greycat-incub-rocksdb.js.map"
+        "dist/greycatincub-level.js",
+        "dist/greycatincub-level.d.ts",
+        "dist/greycatincub-level.js.map"
     ]
 }

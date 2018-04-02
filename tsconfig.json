@@ -9,6 +9,6 @@
         "outDir": "dist"
     },
     "files": [
-        "greycatincub.rocksdb.ts"
+        "greycatincub.level.ts"
     ]
 }
