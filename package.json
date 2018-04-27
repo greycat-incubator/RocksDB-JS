@@ -33,7 +33,6 @@
     "scripts": {
         "mvn": "mvn -f test/java/TestJava/pom.xml clean verify",
         "test": "npm run mvn && mocha -r ts-node/register test/test.ts",
-        "clean": "rm -rf dist",
         "prepublishOnly": "npm run compile",
         "compile": "npm run clean && tsc"
     },
