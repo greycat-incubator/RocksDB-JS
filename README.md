@@ -29,7 +29,7 @@ To test ([Maven](https://maven.apache.org/) should be installed on your computer
 
 ### Npm
 
-- npm install @greycatincub/storage-rocksdb-leveldb
+- npm install greycatincub-level
 
 ## Todo
 
