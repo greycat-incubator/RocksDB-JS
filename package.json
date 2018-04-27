@@ -1,6 +1,6 @@
 {
     "name": "greycatincub-level",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Unofficial RocksDB/LevelDB storage plugin for GreyCat",
     "typings": "dist/greycat-incub-rocksdb.d.ts",
     "main": "dist/greycat-incub-rocksdb.js",
