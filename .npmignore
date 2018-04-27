@@ -1,1 +1,7 @@
 .travis.yml
+node_modules
+.vscode
+.DS_Store
+*.idea
+*.iml
+test/java/**/target

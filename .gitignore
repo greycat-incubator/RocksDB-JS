@@ -1,9 +1,7 @@
 node_modules
-*.js
-*.js.map
-*.d.ts
 .vscode
 .DS_Store
 *.idea
 *.iml
 test/java/**/target
+dist
