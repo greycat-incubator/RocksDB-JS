@@ -1,0 +1,30 @@
+### v1.2.1
+
+Fix the "name problem"
+Add the CHANGELOG file.
+
+### v1.1.1
+
+Fix the problem by modifying the `.npmignore` file.
+
+**Known issue:** Module unsuable due to a mismatch between module name, file names and value of the `main` attribute in `package.json`
+
+### v1.0.2
+
+Try to fix by removing the `clean` script.
+
+**Problem unsolved**.
+
+### v1.0.1
+
+Try to fix the issue by removing `dist` folder from `.gitignore` file.
+
+**Problem unsolved** as the `.gitignore` file is ignored due to the presence of the `.npmignore` file.
+
+### v1.0.0
+
+First version of the plugin.
+Allow connection to a RocksDB database.
+Fully compatible with the Java official plugin anf follow the same semantic.
+
+**Known issue:** Published module is empty.
